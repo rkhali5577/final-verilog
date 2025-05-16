@@ -264,21 +264,35 @@ module top( input clk, input reset,
     
     
     wire [21:0] inst; // im out - decode in (22 bit instruction)
-    wire [3:0] opcode; //decode out - ? in 
-    wire [1:0]ALU_FS;  //decode out - alu in
-    wire [5:0] D_data; //decode out - reg in
-    wire [5:0]Adata; //decode out - reg in
-    wire [5:0]Bdata; //decode out - reg in
-    wire MemWrite; //decode out - ram in
-    wire MemRead; //decode out - ram in???
-    wire MemToReg; //decode out
+    wire [3:0] opcode; //decode out - out
     
-    wire M1; //
+    //data
+    wire [5:0]D_data; // alu out - reg in
+    wire [5:0]Adata; //reg out - alu in
+    wire [5:0]Bdata; //reg out - alu in
+    //addresses
+    wire [5:0]D; //decode out - reg in XX
+    wire [5:0]A; //decode out - reg in XX
+    wire [5:0]B; //decode out - reg in XX
+    
+    wire RegWrite; //decode out - reg in
+    wire MemWrite; //decode out - ram in
+    wire MemRead; //decode out - ram in??? --no space in ram input
+    wire MemToReg; //decode out    --??
+    wire [1:0]ALU_FS;  //decode out - alu in
+    wire Branch; //decode out - ? in
+    wire Jump; //decode out - ?in
+    wire CondJump; //decode out - ?in
+    wire pc_sel; //decode out - pc in --no pc 
+    
+    wire M1; //mux
+    wire M2; //mux
+    
      //ALU 
     wire [6:0]alu_result; 
  //RAM 
     wire ram_data_out; 
- //MUX wire [6:0] MUX1_out;  
+ //MUX wire [6:0] MUX1_out;    
  
  InstructionMemory imem ( 
     .addr(addr), 
