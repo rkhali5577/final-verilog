@@ -1,5 +1,3 @@
-# final-verilog
-# final-verilog
 
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +259,6 @@ endmodule
 module top( input clk, input reset,
     input [5:0] addr,
     input [5:0]D_data, // alu out - reg in XX     
-    output mux_out,
     output wire Branch, //decode out - ? in 
     output wire Jump, //decode out - ?in 
     output wire CondJump, //decode out - ?in 
@@ -269,28 +266,30 @@ module top( input clk, input reset,
     output wire [3:0] opcode, //decode out - out
     output wire MemRead, //decode out - ram in??? --no space in ram input
     output wire MemToReg //decode out    --??    
-    output wire [21:0] inst; // im out - decode in (22 bit instruction)  
+    output wire [21:0] inst, // im out - decode in (22 bit instruction)  
     //data    
-    output wire [5:0]Adata; //reg out - alu in xx
-    output wire [5:0]Bdata; //reg out - alu in xx
+    output wire [5:0]Adata, //reg out - alu in xx
+    output wire [5:0]Bdata, //reg out - alu in xx
     //addresses
-    output wire [5:0]D; //decode out - reg in XX
-    output wire [5:0]A; //decode out - reg in XX
-    output wire [5:0]B; //decode out - reg in XX
+    output wire [5:0]D, //decode out - reg in XX
+    output wire [5:0]A, //decode out - reg in XX
+    output wire [5:0]B, //decode out - reg in XX
+    output wire [5:0] Branch_addr, 
     
-    output wire RegWrite; //decode out - reg in xx
-    output wire MemWrite; //decode out - ram in XX
+    output wire RegWrite, //decode out - reg in xx
+    output wire MemWrite, //decode out - ram in XX
     
-    output wire [1:0]ALU_FS;  //decode out - alu in xx
+    output wire [1:0]ALU_FS,  //decode out - alu in xx
     
     
-    output wire M1; //mux xx
-    output wire M2; //mux
+    output wire M1, //mux xx select
+    output wire M2, //mux
     
      //ALU 
-    output wire [6:0]alu_result; 
+    output wire [6:0]alu_result, 
  //RAM 
-    output wire ram_data_out; 
+    output wire [5:0]ram_data_out, 
+    output wire [5:0]mux_out
  //MUX wire [6:0] MUX1_out;   
     );
     
@@ -350,14 +349,13 @@ ALU alu (
 .Ddata(alu_result) 
 );  
  
-MUX MUX1 (  
+MUX const (  
     .sel(M1),  
     .in1(alu_result), //sel = 0 
     .in2(ram_data_out), //sel = 1 
-    .out(MUX1_out)  
+    .out(mux_out)  
 );  
- 
-assign mux_out = MUX1_out; 
+  
   
 
 endmodule 
