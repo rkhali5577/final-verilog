@@ -259,40 +259,43 @@ end
 endmodule  
 
 module top( input clk, input reset,
-    input [5:0] addr,     
-    output mux_out );
-    
-    
-    wire [21:0] inst; // im out - decode in (22 bit instruction)
-    wire [3:0] opcode; //decode out - out
-    
-    //data
-    wire [5:0]D_data; // alu out - reg in
-    wire [5:0]Adata; //reg out - alu in
-    wire [5:0]Bdata; //reg out - alu in
+    input [5:0] addr,
+    input [5:0]D_data, // alu out - reg in XX     
+    output mux_out,
+    output wire Branch, //decode out - ? in 
+    output wire Jump, //decode out - ?in 
+    output wire CondJump, //decode out - ?in 
+    output wire pc_sel, //decode out - pc in --no pc
+    output wire [3:0] opcode, //decode out - out
+    output wire MemRead, //decode out - ram in??? --no space in ram input
+    output wire MemToReg //decode out    --??    
+    output wire [21:0] inst; // im out - decode in (22 bit instruction)  
+    //data    
+    output wire [5:0]Adata; //reg out - alu in xx
+    output wire [5:0]Bdata; //reg out - alu in xx
     //addresses
-    wire [5:0]D; //decode out - reg in XX
-    wire [5:0]A; //decode out - reg in XX
-    wire [5:0]B; //decode out - reg in XX
+    output wire [5:0]D; //decode out - reg in XX
+    output wire [5:0]A; //decode out - reg in XX
+    output wire [5:0]B; //decode out - reg in XX
     
-    wire RegWrite; //decode out - reg in
-    wire MemWrite; //decode out - ram in
-    wire MemRead; //decode out - ram in??? --no space in ram input
-    wire MemToReg; //decode out    --??
-    wire [1:0]ALU_FS;  //decode out - alu in
-    wire Branch; //decode out - ? in
-    wire Jump; //decode out - ?in
-    wire CondJump; //decode out - ?in
-    wire pc_sel; //decode out - pc in --no pc 
+    output wire RegWrite; //decode out - reg in xx
+    output wire MemWrite; //decode out - ram in XX
     
-    wire M1; //mux
-    wire M2; //mux
+    output wire [1:0]ALU_FS;  //decode out - alu in xx
+    
+    
+    output wire M1; //mux xx
+    output wire M2; //mux
     
      //ALU 
-    wire [6:0]alu_result; 
+    output wire [6:0]alu_result; 
  //RAM 
-    wire ram_data_out; 
- //MUX wire [6:0] MUX1_out;    
+    output wire ram_data_out; 
+ //MUX wire [6:0] MUX1_out;   
+    );
+    
+    
+     
  
  InstructionMemory imem ( 
     .addr(addr), 
@@ -357,6 +360,6 @@ MUX MUX1 (
 assign mux_out = MUX1_out; 
   
 
-Endmodule 
+endmodule 
 
  
