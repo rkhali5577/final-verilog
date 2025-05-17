@@ -1,0 +1,123 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/16/2025 03:42:09 PM
+// Design Name: 
+// Module Name: top_test
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module top_test;
+    reg clk = 0; 
+    reg reset = 0;
+    reg [5:0] pc; //addr into im 
+    reg [5:0] D_data = 19;  
+    wire Branch, Jump, CondJump, pc_sel, M1, M2; 
+    wire [3:0] opcode;
+    wire RegWrite, MemRead, MemWrite, MemToReg; 
+    wire [21:0] inst;              
+ 
+    wire [5:0] D, A, B; 
+    wire [5:0] Adata, Bdata;  
+    wire [5:0] Branch_addr; 
+    wire [1:0] ALU_FS; 
+    wire M1, M2; //mux selects
+    wire [6:0]alu_result;
+    wire [5:0]ram_data_out;
+    wire [5:0]mux_out;
+
+InstructionMemory imem ( 
+    .addr(pc), 
+    .inst(inst) 
+); 
+ 
+Decoder decoder ( 
+    .inst(inst), 
+    .opcode(opcode), 
+    .D(D), 
+    .A(A), 
+    .B(B), 
+    .Branch_addr(Branch_addr), 
+    .RegWrite(RegWrite), 
+    .MemRead(MemRead), 
+    .MemWrite(MemWrite), 
+    .MemToReg(MemToReg), 
+    .ALU_FS(ALU_FS), 
+    .Branch(Branch), 
+    .Jump(Jump), 
+    .CondJump(CondJump), 
+    .pc_sel(pc_sel), 
+    .M1(M1), 
+    .M2(M2) 
+); 
+ 
+RegisterFile regfile ( 
+    .clk(clk), 
+    .reset(reset), 
+    .AA(A), 
+    .BA(B), 
+    .DA(D), 
+    .D_data(D_data), 
+    .reg_write(RegWrite), 
+    .Adata(Adata), 
+    .Bdata(Bdata) 
+); 
+
+RAM ram (   
+.clk(clk),  
+.MW(MemWrite),  
+.address(Adata),  
+.data_in(Bdata), 
+.data_out(ram_data_out)  
+);
+
+ALU alu (  
+.FS(ALU_FS),  
+.Adata(Adata),   
+.Bdata(Bdata), 
+.Ddata(alu_result) 
+);
+
+MUX const (  
+    .sel(M1),  
+    .in1(alu_result), //sel = 0 
+    .in2(ram_data_out), //sel = 1 
+    .out(MUX1_out)  
+); 
+ 
+always #5 clk = ~clk; 
+ 
+initial begin 
+ 
+    reset = 0; #5; 
+ 
+    pc = 0; #10; //test with pc values 
+    pc = 1; #10; 
+    pc = 2; #10; 
+    pc = 3; #10; 
+    pc = 4; #10; 
+    pc = 5; #10; 
+    pc = 6; #10; 
+    pc = 7; #10; 
+    pc = 8; #10; 
+     
+    reset = 1; #5; 
+ 
+    $finish; 
+end 
+  
+
+endmodule 
